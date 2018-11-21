@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Relazione Progetto - Grafica</title>
+<style>
+h1{
+	color: #0D2734;
+}
+
+h2{
+	color: #1B3846;
+}
+
+h3{
+	color: #2E4753;
+}
+
+a{
+	color: #2E4753;
+}
+</style>
+</head>
+<body style="margin-right:5%; margin-left:5%">
+
+<h1 style="text-align:center">SpeedyPizza</h1>
+<h2 style="text-align:center">Progetto di Grafica in OpenGL - Mauro Belgiovine</h2>
+<hr>
+<h2>Obiettivo del gioco</h2>
+
+<p>
+Lo scopo del videogame realizzato consiste nell'effettuare il maggior numero possibile di consegne di pizze ai propri clienti in un tempo limitato 
+(impostato a 2 minuti). Per raggiungere l'obiettivo, l'utente guider&agrave; la jeep del fattorino di SpeedyPizza in una mappa quadrata che simula un 
+ambiente urbano, evitando di collidere con le strutture presenti in essa per non essere rallentato durante le consegne. Per aumentare il livello di 
+sfida e rendere l'azione di gioco pi&ugrave; accattivante, nella mappa &egrave; anche possibile raccogliere durante le consegne una bombola di 
+<a href="https://it.wikipedia.org/wiki/Ossido_di_diazoto">N20 (a.k.a. NOS)</a>, che raddoppier&agrave; la velocit&agrave; del veicolo per 5 secondi. L'utente potr&agrave; organizzare i
+suoi percorsi per le consegne utilizzando la mappa 2D visualizzata nella finestra di gioco, dove oltre alla posizione della vettura e alla disposizione degli
+ostacoli, vengono mostrate la posizione della pizza/cliente e quella del NOS. Inoltre, nel pannello in alto a sinistra &egrave; sempre visibile il tempo rimanente,
+il numero di consegne effettuate e il tempo di esaurimento dell'effetto del NOS.
+</p>
+
+<div style="text-align:center"><img style="width:50%" src="images/snapshot1.png"/><p>Fig. 1: screenshot dell'applicazione</p></div>
+
+<h2>Modalit&agrave; di gioco</h2>
+Una volta avviata la partita, il giocatore deve raccogliere la prima pizza nella posizione indicata sulla mappa. Una volta raccolta, comparir&agrave; sulla mappa
+il segnalino del cliente, a cui la pizza dev'essere consegnata. Una volta effettuata la consegna, una nuova pizza sar&agrave; pronta e si dovr&agrave; ripetere questo 
+procedimento pi&ugrave; volte possibile prima dello scadere del tempo. Sulla mappa sono inoltre sempre presenti 3 NOS (rigenerati man mano che vengono raccolti) che &egrave; possibile attivare durante il tragitto 
+effettuato dall'utente.
+
+Nella mappa i vari oggetti sono indicati con i seguenti colori:
+<ul>
+  <li>ROSSO: veicolo</li>
+  <li>BIANCO: ostacoli</li>
+  <li>VERDE: pizza</li>
+  <li>BLU: cliente</li>
+  <li>GIALLO: NOS</li>
+</ul>
+
+<div style="text-align:center"><img src="images/map.png"/><p>Fig. 2: esempio di Mappa 2D</p></div>
+
+
+<h2>Descrizione dei componenti grafici</h2>
+
+<h3>Jeep</h3>
+<p>
+La jeep di SpeedyPizza &egrave; stata progettata sulla base di un semplice modello reperito in rete, modificandone leggermente la struttura per migliorarne 
+l'aspetto. Il modello &egrave; stato scomposto in 3 diversi oggetti: il telaio, la ruota anteriore e quella posteriore (poi duplicate e riposizionate nella fase di
+rendering). Alle superfici della vettura sono state applicate diverse texture, in base ai materiali che vanno a comporre l'oggetto per darle un aspetto pi&ugrave; 
+realistico, e sul retro &egrave; stato applicato il logo del gioco.
+</p>
+
+<div style="text-align:center"><img style="width:40%" src="images/car1.png"/><img style="width:40%" src="images/car2.png"/><p>Fig. 3: visuale frontale e posterirore della jeep</p></div>
+
+<h3>Costruzioni</h3>
+<p>
+Sono state progettate in Blender quattro semplici costruzioni/strutture, ovvero:
+<ul>
+<li>2 palazzi residenziali;</li>
+<li>1 palazzo per uffici;</li>
+<li>1 torre;</li>
+</ul>
+Ad ognuna di esse &egrave; stata applicata una diversa texture sulle facciate in base alla propria tipologia, mentre &egrave; stata applicata una texture comune per il tetto
+e la base della costruzione.
+<br>
+Le costruzioni posizionate sulla mappa costituiscono gli ostacoli del gioco, che l'utente dovr&agrave; evitare durante le consegne. E' stato infatti implementato
+un semplice meccanismo di <i>collision detection</i> che, in base alla posizione della bounding box (BBOX) della jeep e quelle delle costruzioni, 
+verifica se la macchina ha urtato una struttura. Per maggiori dettagli, si rimanda alla relativa <a href="#coll_det">sezione</a>. 
+</p>
+
+<div style="text-align:center"><img src="images/buildings.png"/><p>Fig. 4: le 4 tipologie di strutture</p></div>
+
+<h3>Pizza</h3>
+<p>
+Il modello della pizza e le texture associate sono stati reperiti in rete. Nella dinamica di gioco, per raccogliere la pizza e poterla consegnare &egrave; necessario
+guidarci abbastanza vicino con la vettura (la vicinanza &egrave; determinata con la relativa funzione di <a href="#distance">distanza</a>). Per attirare l'attenzione dell'utente,
+il modello della pizza viene fatto ruotare costantemente sull'asse Y durante il rendering della scena di gioco.
+</p>
+
+<div style="text-align:center"><img src="images/pizza.png"/><p>Fig. 5: il modello della pizza</p></div>
+
+<h3>NOS</h3>
+<p>
+Il modello della bombola &egrave; stato reperito in rete, ma la texture in questo caso &egrave; stata applicata generando automaticamente le coordinate con la modalit&agrave;
+GL_SPHERE_MAP e utilizzando una texture di tipo "environment mapping", per simulare i riflessi della superficie lucida dell'oggetto. Come per la pizza,
+anche questo modello viene fatto ruotare su s&egrave; stesso durante il rendering della scena e bisogna guidarci vicino per poterlo raccogliere e attivare l'effetto del NOS.
+</p>
+
+<div style="text-align:center"><img src="images/nos.png"/><p>Fig. 6: il modello del NOS</p></div>
+
+<h3>Cliente</h3>
+<p>
+Il modello del Cliente e le texture associate sono stati reperiti in rete. Tramite Blender, si &egrave; modificato il modello (mediante l'applicazione di <i>bones</i>) in modo 
+da ricordare la posa di un cliente che con la mano fa cenno al fattorino per la consegna. 
+</p>
+
+<div style="text-align:center"><img src="images/old_man.png"/><p>Fig. 7: il modello del cliente</p></div>
+
+<h3>Banner pubblicitario</h3>
+<p>
+Il modello del banner &egrave; stato reperito in rete, ma le texture sono state modificate in modo da mostrare una foto dello sviluppatore insieme a un gruppo di 
+amici mentre si trovava nelle campagne del Salento.
+</p>
+
+<div style="text-align:center"><img src="images/banner.png"/><p>Fig. 8: il banner pubblicitario</p></div>
+
+<h3>Mappa</h3>
+<p>
+La mappa di gioco consiste in una matrice quadrata di 25x25 "piastrelle" (nello specifico, superifici di tipo GL_QUAD), ognuno dei quali pu&ograve; ospitare uno
+degli oggetti tra:
+<ul>
+<li>una costruzione (ostacolo)</li>
+<li>la pizza</li>
+<li>il cliente</li>
+<li>il NOS</li>
+<li>il banner pubblicitario</li>
+</ul>
+Le piastrelle presentano una texture di tipo "cemento" o "mattonelle", a seconda che siano vuote oppure ospitino una costruzione: questo serve a dare l'idea 
+di un percorso stradale che costeggi le aree abitate, dove la jeep dovrebbe spostarsi. Tuttavia, non &egrave; vietato prendere scorciatoie negli spazi tra le costruzioni,
+dando la possibilit&agrave; al giocatore di prendere scorciatoie.
+
+La mappa viene generata in maniera random ad ogni nuova partita, cos&igrave; come la posizione della pizza/cliente ad ogni consegna, del NOS e del banner.
+Per quanto riguarda pizza, cliente, NOS e banner, gli oggetti vengono posizionati sempre in una piastrella non occupata da un palazzo, mentre per la modalit&agrave;
+di generazione della mappa degli ostacoli si rimanda alla relativa <a href="#random_gen">sezione</a>.
+</p>
+<div style="text-align:center"><img src="images/gen_map.png"/><p>Fig. 9: visuale dall'alto di un esempio di generazione della mappa di gioco</p></div>
+<h2>Dettagli implementativi</h2>
+
+<h3>Caricamento file .obj e .mtl</h3>
+Quando viene caricato un file .obj, se questi presenta informazioni sui materiali da applicare alle superfici, esse vengono lette dal relativo file
+.mtl. Il materiale e la texture da applicare vengono salvate in un vettore che viene riempito man mano che i file .mtl vengono letti per ognuno degli oggetti. 
+Per ogni faccia da disegnare di ogni oggetto viene salvato l'indice del materiale da applicare.
+Una volta salvate queste informazioni, le varie texture associate ai materiali vengono caricate in memoria con l'apposita funzione <i>LoadTexture</i> (che ne genera la MipMap 2D)
+e il relativo indice, da usare con <i>glBindTexture</i>, viene aggiornato per ogni materiale. Nella fase di rendering, quando vengono letti i vertici delle 
+facce e le relative coordinate delle texture, queste ultime vengono bindate dinamicamente utilizzando l'indice salvato per ogni faccia. Questo meccanismo permette di caricare e applicare le texture
+automaticamente utilizzando le informazioni contenute nei file .obj e .mtl.
+
+<h3>Generazione della mappa</h3>
+<p id="random_gen">
+Il posizionamento degli ostacoli viene effettuato utilizzando una <i>matrice di posizioni</i> di N_CELLS*N_CELLS (N_CELLS = 25). Dapprima viene riempito un vettore di N_BUILDINGS elementi,
+dove N_BUILDINGS rappresenta il numero di palazzi/ostacoli che vogliamo posizionare sulla mappa (N_BUILDINGS &lt;&lt; N_CELLS). Ognuno degli elementi del vettore
+&egrave; una mesh corrispondente a una delle 4 tipologie di palazzi (la tipologia &egrave; scelta in maniera random tra quelle disponibili).
+<br>
+Si procede poi al riempimento della matrice in questo modo:
+per ogni palazzo, si genera una posizione random nella matrice e, se libera, si assegna l'indice del palazzo a quella posizione. Si procede a posizionare
+altri 8 palazzi intorno ad esso (sempre se ogni posizione risulti libera). Cos&igrave; facendo, per ogni posizione scelta in maniera casuale ci saranno altri palazzi nelle
+piastrelle che lo circondano, creando dei "centri di aggregazione" che visivamente ricordino una disposizione realistica di una ambiente urbano e
+creando degli spazi fra di essi che possano ricordare delle strade.
+</p>
+
+<h3>Collision detection</h3>
+<p id="coll_det">
+Nella computazione dello <i>step fisico</i> di riposizionamento della vettura, si verifica che la posizione di uno qualsiasi dei vertici della BBOX del telaio 
+non sia sovrapposto all'area 2D (sul piano XZ) di ognuna delle costruzioni presenti nella mappa. Se ci&ograve; avviene per una qualsiasi delle strutture,
+allora l'accelerazione della vettura viene settata a 0 in tutte le direzioni, avendo come effetto quello di fermare la corsa della vettura.
+Questo semplice meccanismo pu&ograve; essere utilizzato in quanto le costruzioni sono orientate tutte allo stesso modo e aggiornando i vertici delle BBOX cos&igrave;:
+<ul>
+<li>Costruzioni: al momento della generazione della mappa, in base alla posizione nella matrice delle posizioni, si aggiornano i valori dei vertici minimi 
+e massimi della BBOX in base alla traslazione effettuata sulla struttura per posizionarla nel mondo;</li>
+<li>Vettura: ad ogni computazione dello <i>step fisico</i>, si aggiorna la posizione dei vertici nei 3 assi XYZ in base all'accelerazione applicata al veicolo 
+(utilizzando i valori relativi alle coordinate del mondo).</li>
+</ul>
+</p>
+
+<h3>Distanza jeep-oggetti</h3>
+<p id="#distance">
+La distanza della vettura dagli oggetti viene calcolata con la distanza euclidea tra i due rispettivi centri della BBOX, i quali vengono aggiornati in base alla posizione
+attuale degli oggetti nel mondo.
+</p>
+
+
+</body>
+</html>

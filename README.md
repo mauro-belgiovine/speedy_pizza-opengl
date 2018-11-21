@@ -16,6 +16,7 @@ il numero di consegne effettuate e il tempo di esaurimento dell'effetto del NOS.
 
 
 ## Modalit&agrave; di gioco
+
 Una volta avviata la partita, il giocatore deve raccogliere la prima pizza nella posizione indicata sulla mappa. Una volta raccolta, comparir&agrave; sulla mappa
 il segnalino del cliente, a cui la pizza dev'essere consegnata. Una volta effettuata la consegna, una nuova pizza sar&agrave; pronta e si dovr&agrave; ripetere questo 
 procedimento pi&ugrave; volte possibile prima dello scadere del tempo. Sulla mappa sono inoltre sempre presenti 3 NOS (rigenerati man mano che vengono raccolti) che &egrave; possibile attivare durante il tragitto 
